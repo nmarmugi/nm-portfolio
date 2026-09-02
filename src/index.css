@@ -1,0 +1,173 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    margin: 0;
+    background-color: #000;
+    font-family: 'Helvetica Neue ME', Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+@layer utilities {
+  /* --- Entrance animations --- */
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes rise-in {
+    from {
+      opacity: 0;
+      transform: translateY(4vh) scale(1.03);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(28px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes line-in {
+    from {
+      transform: scaleX(0);
+    }
+    to {
+      transform: scaleX(1);
+    }
+  }
+
+  @keyframes marquee-scroll {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  .anim-fade-in {
+    animation: fade-in 1.2s ease-out both;
+  }
+
+  .anim-rise-in {
+    animation: rise-in 1.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .anim-fade-up {
+    animation: fade-up 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .anim-line {
+    transform-origin: left;
+    animation: line-in 1.1s cubic-bezier(0.76, 0, 0.24, 1) both;
+  }
+
+  .marquee {
+    animation: marquee-scroll 30s linear infinite;
+  }
+
+  /* Comic-book ground on the secret view: rays turning, halftone drifting. */
+  @keyframes ray-spin {
+    from {
+      transform: translate(-50%, -50%) rotate(0deg);
+    }
+    to {
+      transform: translate(-50%, -50%) rotate(360deg);
+    }
+  }
+
+  .ray-spin {
+    animation: ray-spin 90s linear infinite;
+  }
+
+  /* Travels exactly one tile, so the loop has no seam. */
+  @keyframes halftone-drift {
+    from {
+      background-position: 0 0;
+    }
+    to {
+      background-position: 16px 16px;
+    }
+  }
+
+  .halftone-drift {
+    animation: halftone-drift 6s linear infinite;
+  }
+
+  /* Comic burst on the secret view: a shape that breathes, never still. */
+  @keyframes burst-pulse {
+    0%,
+    100% {
+      transform: rotate(-8deg) scale(1);
+    }
+    50% {
+      transform: rotate(-4deg) scale(1.07);
+    }
+  }
+
+  .burst-pulse {
+    animation: burst-pulse 2.6s ease-in-out infinite;
+  }
+
+  /* Idle drift for the floating props on the secret view. */
+  @keyframes float-bob {
+    0%,
+    100% {
+      transform: translateY(-8px) rotate(var(--tilt, -4deg));
+    }
+    50% {
+      transform: translateY(10px) rotate(calc(var(--tilt, -4deg) * -0.5));
+    }
+  }
+
+  .float-bob {
+    animation: float-bob 7s ease-in-out infinite;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .anim-fade-in,
+  .anim-rise-in,
+  .anim-fade-up,
+  .anim-line,
+  .marquee,
+  .float-bob,
+  .ray-spin,
+  .halftone-drift,
+  .burst-pulse {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+  }
+
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+  }
+}
