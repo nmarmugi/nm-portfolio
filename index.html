@@ -12,8 +12,11 @@
     />
     <meta name="author" content="Nicola Marmugi" />
 
-    <!-- TODO: set this to the domain the portfolio is actually served from -->
-    <link rel="canonical" href="https://www.nicolamarmugi.com/" />
+    <!-- Keep this page out of search results, but let crawlers keep following
+         the outbound link to nicolamarmugi.com, which is the site meant to
+         rank for the name. Do not add a canonical alongside this: the two are
+         conflicting signals. -->
+    <meta name="robots" content="noindex, follow" />
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Nicola Marmugi" />
@@ -22,11 +25,9 @@
       property="og:description"
       content="Product interfaces in React, Next.js and TypeScript. Based in Viareggio, Italy."
     />
-    <meta property="og:url" content="https://www.nicolamarmugi.com/" />
-    <meta
-      property="og:image"
-      content="https://www.nicolamarmugi.com/og.jpg"
-    />
+    <!-- %SITE_ORIGIN% is filled in at build time from site.config.ts -->
+    <meta property="og:url" content="%SITE_ORIGIN%/" />
+    <meta property="og:image" content="%SITE_ORIGIN%/og.jpg" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content="Nicola Marmugi, Front End Developer" />
