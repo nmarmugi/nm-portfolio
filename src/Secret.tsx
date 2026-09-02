@@ -49,9 +49,9 @@ function withAlpha(hex: string, alpha: number) {
  * placed to clear the figure, the marquee and the balloon at every width.
  */
 const PROPS = [
-  { name: 'pass-music', tilt: '-6deg', seconds: 7.5 },
-  { name: 'pass-food', tilt: '-4deg', seconds: 8.4 },
-  { name: 'pass-comics', tilt: '5deg', seconds: 6.2 },
+  { name: 'pass-music', tilt: '-6deg', seconds: 7.5, w: 299, h: 300 },
+  { name: 'pass-food', tilt: '-4deg', seconds: 8.4, w: 372, h: 326 },
+  { name: 'pass-comics', tilt: '5deg', seconds: 6.2, w: 411, h: 573 },
 ]
 
 export default function Secret({
@@ -85,6 +85,18 @@ export default function Secret({
       setTipOpen(true)
     }
   }, [active])
+
+  /**
+   * The next object is fetched while this one is on show, so tapping
+   * through swaps an image that is already decoded rather than waiting
+   * on the network.
+   */
+  useEffect(() => {
+    if (!active) return
+    const next = PROPS[(slot + 1) % PROPS.length]
+    const warm = new Image()
+    warm.src = `/${next.name}.webp`
+  }, [active, slot])
 
   /**
    * Leaving with a balloon open used to flash it over the home view for the
@@ -292,12 +304,24 @@ export default function Secret({
       {/* Bottom: the object on show, and the hint. Both in flow, so nothing
           can ever land on the portrait or run off an edge. */}
       <div
-        className="absolute inset-x-0 bottom-0 z-30 px-6 pb-5 sm:px-10 sm:pb-8"
+        className="absolute inset-x-0 bottom-0 z-30 px-6 pb-5 [--obj-h:7rem] [--obj-w:5rem] sm:px-10 sm:pb-8 sm:[--obj-h:9rem] sm:[--obj-w:6rem]"
         style={step(active, 600, '20px')}
       >
         {/* The balloon owns a full line: sharing one with the caption left it
             about 165px wide on a phone. */}
-        <div className="max-w-full sm:max-w-xs">
+        {/* object-contain leaves the short objects sitting at the base of a
+            box sized for the tallest one. The balloon takes up that slack
+            with a transform, so it hugs whatever is on show without the box
+            (and the layout) ever changing height. */}
+        <div
+          className="max-w-full sm:max-w-xs"
+          style={{
+            transform:
+              'translateY(max(0px, calc(var(--obj-h) - var(--obj-w) * ' +
+              prop.h / prop.w +
+              ')))',
+          }}
+        >
           <div
             key={prop.name}
             className="anim-fade-up relative mb-4 rounded-[22px] px-4 py-3 text-left"
@@ -357,7 +381,8 @@ export default function Secret({
             }}
             aria-expanded={tipOpen}
             aria-label={copy.title}
-            className="block w-20 cursor-pointer outline-none transition-opacity duration-300 hover:opacity-80 focus-visible:opacity-70 sm:w-24"
+            style={{ width: 'var(--obj-w)', height: 'var(--obj-h)' }}
+            className="block cursor-pointer outline-none transition-opacity duration-300 hover:opacity-80 focus-visible:opacity-70"
           >
             <picture>
               <source srcSet={`/${prop.name}.webp`} type="image/webp" />
@@ -366,9 +391,10 @@ export default function Secret({
                 src={`/${prop.name}.png`}
                 alt=""
                 aria-hidden="true"
-                loading="lazy"
+                width={prop.w}
+                height={prop.h}
                 decoding="async"
-                className="float-bob w-full drop-shadow-[0_14px_24px_rgba(0,0,0,0.3)]"
+                className="float-bob h-full w-full object-contain object-bottom drop-shadow-[0_14px_24px_rgba(0,0,0,0.3)]"
                 style={
                   {
                     '--tilt': prop.tilt,
