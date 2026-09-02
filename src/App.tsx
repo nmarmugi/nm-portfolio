@@ -68,8 +68,11 @@ export default function App() {
       }
     };
 
-    const firstLink = drawer.current?.querySelector("a");
-    firstLink?.focus();
+    // Focus goes to the panel, not to its first link: focusing a link paints
+    // the browser's focus ring, which on touch reads as a stray box drawn
+    // around the first entry. The panel is tabbable only programmatically
+    // (tabIndex -1), so keyboard users still continue into the drawer.
+    drawer.current?.focus({ preventScroll: true });
 
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -383,9 +386,10 @@ export default function App() {
 
         <aside
           ref={drawer}
+          tabIndex={-1}
           aria-label={t.drawer.index}
           aria-hidden={!menuOpen}
-          className="fixed inset-y-0 right-0 z-40 w-[80%] max-w-sm bg-[#141414] px-8 py-10"
+          className="fixed inset-y-0 right-0 z-40 w-[80%] max-w-sm bg-[#141414] px-8 py-10 outline-none"
           style={{
             transform: menuOpen ? "translateX(0)" : "translateX(100%)",
             // Same reason as the view layers: off-screen is still focusable.
